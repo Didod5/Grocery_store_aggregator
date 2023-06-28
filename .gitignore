@@ -130,6 +130,7 @@ env.bak/
 venv.bak/
 aggregator_env/
 config.py
+settings.py
 
 # Spyder project settings
 .spyderproject
