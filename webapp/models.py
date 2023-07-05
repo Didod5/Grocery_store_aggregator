@@ -32,7 +32,7 @@ class Shop(db.Model):
     __tablename__ = 'shops'
 
     id = db.Column(db.Integer, primary_key=True)
-    counrty_id = db.Column(db.Integer, db.ForeignKey(Country.id), index=True, nullable=False)
+    country_id = db.Column(db.Integer, db.ForeignKey(Country.id), index=True, nullable=False)
     description = db.Column(db.String, nullable=True)
     name = db.Column(db.String, unique=True, nullable=False)
     site_link = db.Column(db.String, nullable=True)
@@ -49,7 +49,7 @@ class Good(db.Model):
     units = db.Column(db.String, nullable=True)
     description = db.Column(db.String, nullable=True)
     image = db.Column(db.String, nullable=True)
-    link = db.Column(db.String, nullable=True)
+    link = db.Column(db.String, unique=True, nullable=True)
     name = db.Column(db.String, nullable=False)
     rating = db.Column(db.Float, nullable=True)
 
