@@ -13,7 +13,6 @@ def get_number_of_pages_by_category(category, url, params):
     params['category'] = category
     params['page'] = 1
     params['url'] = category
-
     try:
         result = requests.get(url, params=params)
         result.raise_for_status()
@@ -33,7 +32,6 @@ def get_goods_page_by_category(category, url, params, page_num):
     params['category'] = category
     params['page'] = page_num
     params['url'] = category
-  
     try:
         result = requests.get(url, params=params)
         result.raise_for_status()
@@ -51,23 +49,18 @@ def get_goods_page_by_category(category, url, params, page_num):
 
 def extract_good_data(good, category):
     final_good = {}
-
     final_good['shop_name'] = settings.SHOP_NAME
     final_good['shop_country'] = settings.SHOP_COUNTRY
     final_good['shop_description'] = settings.SHOP_DESCRIPTION
     final_good['shop_link'] = settings.SHOP_LINK
-
     final_good['currency_name'] = 'SGD'
     final_good['currency_symbol'] = 'S$'
-
     final_good['category_name'] = category
-
     if 'mrp' in good['storeSpecificData'][0]:
         final_good['price'] = good['storeSpecificData'][0]['mrp']
     if 'offers' in good:
         final_good['price_discount'] = good['offers'][0]['price']
     final_good['price_date'] = date.today()
-
     if 'name' in good:
         final_good['name'] = good['name']
     if 'DisplayUnit' in good['metaData']:
@@ -83,7 +76,6 @@ def extract_good_data(good, category):
         final_good['rating'] = None
     if 'description' in good:
         final_good['description'] = good['description']
-
     return final_good
     
 def get_goods_by_category(category, url, params):
@@ -275,8 +267,8 @@ def save_goods(data, category_id, shops):
     print(len(unique_goods))
     existing_links = [good['link'] for good in existing_goods]
     record_goods = []
-    for new_good in unique_goods: #сделать новый список not in
-        if new_good['link'] not in existing_links: #вынести список в пер до цикла
+    for new_good in unique_goods:
+        if new_good['link'] not in existing_links: 
             record_goods.append(new_good)
     print('Количество новых товаров после удаления существующих')    
     print(len(record_goods))
@@ -317,8 +309,6 @@ def save_prices(data, currencies, goods):
         select(Price).join(subq, Price.good_id == subq.c.good_id and Price.date == subq.c.date)
     ).fetchall()
     existing_prices = []
-    print('Общее количество цен для записи в базу')
-    print(len(prices))
     if results:
         for object in results:
             price = {
@@ -329,28 +319,22 @@ def save_prices(data, currencies, goods):
                 'good_id': object.Price.good_id
             }
             existing_prices.append(price)
-        if existing_prices:
-            record_price = []
-            existing_good_prices = [price['good_id'] for price in existing_prices]
-            for new_price in prices:
-                if new_price['good_id'] not in existing_good_prices:
-                    record_price.append(new_price)
-                else:
-                    for current_price in existing_prices:
-                        if new_price['good_id'] == current_price['good_id']:
-                            if (new_price['value']!=current_price['value']) or (new_price['value_discount']!= current_price['value_discount']):
-                                record_price.append(new_price)
-            if record_price:
-                print("Количество новых цен для записи")
-                print(len(record_price))
-                db.session.execute(insert(Price), record_price)
-                db.session.commit()
+        record_price = []
+        existing_good_prices = [price['good_id'] for price in existing_prices]
+        for new_price in prices:
+            if new_price['good_id'] not in existing_good_prices:
+                record_price.append(new_price)
+            else:
+                for current_price in existing_prices:
+                    if (new_price['good_id'] == current_price['good_id']) and (new_price['date'] != current_price['date']):
+                        if (new_price['value'] != current_price['value']) or (new_price['value_discount'] != current_price['value_discount']):
+                            record_price.append(new_price)
+        if record_price:
+            db.session.execute(insert(Price), record_price)
+            db.session.commit()
     else:
-        print('В базе нет цен для таких товаров')
         db.session.execute(insert(Price), prices)
         db.session.commit()
-    print('Количество цен, имеющихся в базе')
-    print(len(existing_prices))
 
 def save_category_items(category_name, category_items):
     app = create_app()
