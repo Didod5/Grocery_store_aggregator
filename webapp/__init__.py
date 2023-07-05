@@ -1,5 +1,5 @@
-from flask import Flask, render_template, url_for
-
+from flask import Flask, render_template, url_for, request
+from webapp.models import Good, Price
 from webapp.db import db
 
 def create_app():
@@ -10,19 +10,15 @@ def create_app():
     @app.route('/')
     def index():
         page_title = 'Aggregator'
-        return render_template('index.html', page_title=page_title)
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 12, type=int)
+        offset = (page - 1) * per_page
+        goods = Good.query.limit(per_page).offset(offset).all()
+        prices = Price.query.all()
+        return render_template('index.html', page_title=page_title, page=page, products=goods)
     
     @app.route('/product/<int:product_id>')
-    def product(product_id):
-        
-        # здесь надо вытаскивать данные из базы
-        product_data = {
-            'name': '',
-            'description': '',
-            'price': '',
-            'img_path': ''
-        }
-        
-        return render_template('product.html', product=product_data)
+    def product(product_id):  
+        return render_template('product.html')
 
     return app
