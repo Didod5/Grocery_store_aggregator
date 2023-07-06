@@ -1,40 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Aggregator</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .product-page {
-            padding: 10px;
-        }
+{% extends "base.html" %}
 
-        .product-image {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-        }
+{% block link %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
 
-        .product-details {
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="product-page">
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="{{ product.image }}" alt="Product Image" class="product-image">
-                </div>
-                <div class="col-md-6">
-                    <h2>{{ product.name }}</h2>
-                    <p>{{ product.description }}</p>
-                    <p>{{ product.price }}</p>
-                </div>
+{% block styles %}
+.product-page {
+    padding: 10px;
+}
+.product-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+.product-details {
+    margin-bottom: 20px;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="product-page">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{{ product.image }}" alt="Product Image" class="product-image">
+            </div>
+            <div class="col-md-6">
+                <h2>{{ product.name }}</h2>
+                {% if product.description %}
+                    <p>Description:</p>
+                    <p>{{ product.description|safe }}</p>
+                {% endif %}
+                {% if product.price_discount %}
+                    <p>Old price: <s>{{ product.price }}</s><br>Discount price: {{ product.price_discount }}</p>
+                {% else %}
+                    <p>Price: {{ product.price }}</p>
+                {% endif %}
+                <p>Date: {{ product.date.strftime('%d.%m.%Y')}}</p>
+                {% if product.units %}
+                    <p>Size: {{ product.units}}</p>
+                {% endif %}
+                {% if product.rating %}
+                    <p>Rating: {{ product.rating}}</p>
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
+{%  block scripts %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}    
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>

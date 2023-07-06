@@ -1,71 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ page_title }}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .categories {
-            padding: 10px;
-        }
+{% extends "base.html" %}
 
-        .products {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            padding: 10px;
-        }
+{% block link %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
 
-        .product-card {
-            flex-basis: 30%;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 categories">
-                <h2>Categories</h2>
-                <ul class="list-group">
-                    <li class="list-group-item">Beer</li>
-                </ul>
-            </div>
-            <div class="col-md-9 products">
-                {% for product in products %}
-                <div class="product-card">
-                    <img src="{{ product.image }}" alt="Product Image" class="product-image">
-                    <h3>{{ product.name }}</h3>
-                    <p>{{ product.description }}</p>
-                    <p>{{ product.cost }}</p>
-                    <a href="{{ url_for('product', product_id=product.id) }}">More</a>
-                </div>
-                {% endfor %}
+{% block styles %}
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+}
 
-                <div class="pagination">
-                    {% if page > 1 %}
-                      <a href="{{ url_for('index', page=page-1, per_page=per_page) }}" class="page-link">Previous</a>
-                    {% endif %}
-                  
-                    {% for num in range(1, total_pages+1) %}
-                      {% if num == page %}
-                        <a href="{{ url_for('index', page=num, per_page=per_page) }}" class="page-link active", style="background-color: #c7c8ca;">{{ num }}</a>
-                      {% else %}
-                        <a href="{{ url_for('index', page=num, per_page=per_page) }}" class="page-link">{{ num }}</a>
-                      {% endif %}
-                    {% endfor %}
-                  
-                    {% if page < total_pages %}
-                      <a href="{{ url_for('index', page=page+1, per_page=per_page) }}" class="page-link">Next</a>
-                    {% endif %}
-                  </div>
-            </div>
+.product-card {
+    flex-basis: 30%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% for product in products %}
+    <div class="col-4">
+        <div class="product-card">
+            <img src="{{ product.image }}" alt="Product Image" class="product-image" height="200">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>{{ product.cost }}</p>
+            <a href="{{ url_for('product', product_id=product.id) }}">More</a>
         </div>
     </div>
+    {% endfor %}
+</div>
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('index', page=page-1, per_page=per_page) }}" class="page-link">Previous</a>
+    {% endif %}
+    
+    {% for num in range(1, total_pages+1) %}
+        {% if num == page %}
+        <a href="{{ url_for('index', page=num, per_page=per_page) }}" class="page-link active", style="background-color: #c7c8ca;">{{ num }}</a>
+        {% else %}
+        <a href="{{ url_for('index', page=num, per_page=per_page) }}" class="page-link">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    
+    {% if page < total_pages %}
+        <a href="{{ url_for('index', page=page+1, per_page=per_page) }}" class="page-link">Next</a>
+    {% endif %}
+</div>
 
-
+{% endblock %}
+{%  block scripts %}
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% endblock %}
