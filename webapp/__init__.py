@@ -13,11 +13,12 @@ def create_app():
     def index():
         page_title = 'Categories'
         page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 12, type=int)
+        per_page = request.args.get('per_page', 24, type=int)
+        total_pages = (db.session.query(func.count(Good.id)).scalar() + per_page - 1) // per_page
         offset = (page - 1) * per_page
         goods = Good.query.limit(per_page).offset(offset).all()
         prices = Price.query.all()
-        return render_template('index.html', page_title=page_title, page=page, products=goods, total_pages=200)
+        return render_template('index.html', page_title=page_title, page=page, products=goods, total_pages=total_pages)
     
     @app.route('/product/<int:product_id>')
     def product(product_id):
