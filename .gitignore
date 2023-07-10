@@ -131,6 +131,7 @@ venv.bak/
 aggregator_env/
 config.py
 settings.py
+query.py
 
 # Spyder project settings
 .spyderproject

@@ -19,34 +19,34 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="product-page">
-        <div class="row">
-            <div class="col-md-6">
-                <img src="{{ product.image }}" alt="Product Image" class="product-image">
-            </div>
-            <div class="col-md-6">
-                <h2>{{ product.name }}</h2>
-                {% if product.description %}
-                    <p>Description:</p>
-                    <p>{{ product.description|safe }}</p>
-                {% endif %}
-                {% if product.price_discount %}
-                    <p>Old price: <s>{{ product.price }}</s><br>Discount price: {{ product.price_discount }}</p>
-                {% else %}
-                    <p>Price: {{ product.price }}</p>
-                {% endif %}
-                <p>Date: {{ product.date.strftime('%d.%m.%Y')}}</p>
-                {% if product.units %}
-                    <p>Size: {{ product.units}}</p>
-                {% endif %}
-                {% if product.rating %}
-                    <p>Rating: {{ product.rating}}</p>
-                {% endif %}
-            </div>
+
+<div class="product-page">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ product.image }}" alt="Product Image" class="product-image">
+        </div>
+        <div class="col-md-6">
+            <h2>{{ product.name }}</h2>
+            {% if product.description %}
+                <p>Description:</p>
+                <p>{{ product.description|safe }}</p>
+            {% endif %}
+            {% if product.price_discount %}
+                <p>Old price: <s>{{ product.price }}</s><br>Discount price: {{ product.price_discount }}</p>
+            {% else %}
+                <p>Price: {{ product.price }}</p>
+            {% endif %}
+            <p>Date: {{ product.date.strftime('%d.%m.%Y')}}</p>
+            {% if product.units %}
+                <p>Size: {{ product.units}}</p>
+            {% endif %}
+            {% if product.rating %}
+                <p>Rating: {{ product.rating}}</p>
+            {% endif %}
         </div>
     </div>
 </div>
+
 {% endblock %}
 {%  block scripts %}
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

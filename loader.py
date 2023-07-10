@@ -59,7 +59,8 @@ def extract_good_data(good, category):
     if 'mrp' in good['storeSpecificData'][0]:
         final_good['price'] = good['storeSpecificData'][0]['mrp']
     if 'offers' in good:
-        final_good['price_discount'] = good['offers'][0]['price']
+        if good['offers']:
+            final_good['price_discount'] = good['offers'][0]['price']
     final_good['price_date'] = date.today()
     if 'name' in good:
         final_good['name'] = good['name']
@@ -304,9 +305,9 @@ def save_prices(data, currencies, goods):
         }
         if price['good_id'] not in [pr['good_id'] for pr in prices]:
             prices.append(price)
-    subq = select(Price.good_id, func.max(Price.date)).where(Price.good_id.in_([price['good_id'] for price in prices])).group_by("good_id").subquery()
+    subq = select(Price.good_id, func.max(Price.date).label("date")).where(Price.good_id.in_([price['good_id'] for price in prices])).group_by("good_id").subquery()
     results = db.session.execute(
-        select(Price).join(subq, Price.good_id == subq.c.good_id and Price.date == subq.c.date)
+        select(Price).join(subq, (Price.good_id == subq.c.good_id) & (Price.date == subq.c.date))
     ).fetchall()
     existing_prices = []
     if results:

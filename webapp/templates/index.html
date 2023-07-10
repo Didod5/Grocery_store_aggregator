@@ -5,61 +5,58 @@
 {% endblock %}
 
 {% block styles %}
-.products {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 10px;
-}
-
 .product-card {
     flex-basis: 30%;
-    margin-bottom: 20px;
+    margin: 10px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 3px ridge #20202040; 
+    border-radius: 15px;
+}
+.row-flex {
+    display: flex;
+    margin-top: 20px;
+    width: 100%;
 }
 {% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row gx-5 row-flex">
     {% for product in products %}
-    <div class="col-4">
-        <div class="product-card">
-            <img src="{{ product.image }}" alt="Product Image" class="product-image" height="200">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description | safe }}</p>
-            <p>{{ product.cost }}</p>
-            <a href="{{ url_for('product', product_id=product.id) }}">More</a>
-        </div>
+    <div class="col-4 product-card">
+        <img src="{{ product.image }}" alt="Product Image" class="product-image" height="200">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description | safe }}</p>
+        <p>{{ product.value }}</p>
+        <a href="{{ url_for('product', product_id=product.id) }}">More</a>
     </div>
     {% endfor %}
 </div>
-<div class="pagination">
+
+<div class="pagination d-flex justify-content-center" style="margin: 20px;">
     {% if page > 1 %}
-        <a href="{{ url_for('index', page=page-1, per_page=per_page) }}" class="page-link"> <<Previous</a>
+        <a href="{{ url_for('index', page=page-1, category=current_category) }}" class="page-link"> <<Previous</a>
     {% endif %}
     
     {% if page > 6 %}
-    <a href="{{ url_for('index', page=1, per_page=per_page) }}" class="page-link">1</a>
+    <a href="{{ url_for('index', page=1, category=current_category) }}" class="page-link">1</a>
     <h2>...</h2>
     {% endif %}
 
     {% for num in range((page-5, 1)|max, (page+6, total_pages+1)|min) %}
         {% if num == page %}
-            <a href="{{ url_for('index', page=num, per_page=per_page) }}" class="page-link active" style="background-color: #c7c8ca;">{{ num }}</a>
+            <a href="{{ url_for('index', page=num, category=current_category) }}" class="page-link active" style="background-color: #c7c8ca;">{{ num }}</a>
         {% else %}
-            <a href="{{ url_for('index', page=num, per_page=per_page) }}" class="page-link">{{ num }}</a>
+            <a href="{{ url_for('index', page=num, category=current_category) }}" class="page-link">{{ num }}</a>
         {% endif %}
     {% endfor %}
 
     {% if page < total_pages - 5 %}
     <h2>...</h2>
-    <a href="{{ url_for('index', page=total_pages, per_page=per_page) }}" class="page-link">{{ total_pages }}</a>
+    <a href="{{ url_for('index', page=total_pages, category=current_category) }}" class="page-link">{{ total_pages }}</a>
     {% endif %}
 
     {% if page < total_pages %}
-        <a href="{{ url_for('index', page=page+1, per_page=per_page) }}" class="page-link">Next >></a>
+        <a href="{{ url_for('index', page=page+1, category=current_category) }}" class="page-link">Next >></a>
     {% endif %}
 </div>
 

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request
 from sqlalchemy import func, select
 
-from webapp.models import Good, Price
+from webapp.models import Category, Good, Price
 from webapp.db import db
 
 def create_app():
@@ -11,19 +11,31 @@ def create_app():
 
     @app.route('/')
     def index():
-        page_title = 'Categories'
+        categories = app.config['CATEGORIES']
+        current_category = request.args.get('category', None, type=str)
         page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 24, type=int)
-        total_pages = (db.session.query(func.count(Good.id)).scalar() + per_page - 1) // per_page
-        offset = (page - 1) * per_page
-        goods = Good.query.limit(per_page).offset(offset).all()
-        prices = Price.query.all()
-        return render_template('index.html', page_title=page_title, page=page, products=goods, total_pages=total_pages)
+        per_page = app.config['OFFSET']
+        if current_category:
+            page_title = current_category.capitalize()
+            for category in categories:
+                if category['name'] == current_category:
+                    category['is_active'] = True
+                else:
+                    category['is_active'] = False
+            category_id = db.session.query(Category.id).filter(Category.name == current_category).scalar()
+            query = db.session.query(Good).filter(Good.category_id == category_id)
+            pagination = query.paginate(page=page, per_page=per_page)
+            return render_template('index.html', page_title=page_title, page=page, products=pagination.items, total_pages=pagination.pages, categories=categories, current_category=current_category)
+        else:
+            page_title = 'Categories'
+            query = db.session.query(Good)
+            pagination = query.paginate(page=page, per_page=per_page)
+            return render_template('index.html', page_title=page_title, page=page, products=pagination.items, total_pages=pagination.pages, categories=categories)
     
     @app.route('/product/<int:product_id>')
     def product(product_id):
-        subq = select(Price.good_id, func.max(Price.date)).where(Price.good_id == product_id).group_by("good_id").subquery()
-        subq2 = select(Price.value, Price.value_discount, Price.date, Price.good_id).join(subq, Price.good_id == subq.c.good_id and Price.date == subq.c.date).subquery()
+        subq = select(Price.good_id, func.max(Price.date).label("date")).where(Price.good_id == 1).group_by("good_id").subquery()
+        subq2 = select(Price.value, Price.value_discount, Price.date, Price.good_id).join(subq, (Price.good_id == subq.c.good_id) & (Price.date == subq.c.date)).subquery()
         result = db.session.execute(
             select(
                     Good.name, Good.description, Good.image, Good.rating, Good.units, subq2.c.value, subq2.c.value_discount, subq2.c.date
