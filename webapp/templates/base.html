@@ -12,8 +12,25 @@
     <title>{{page_title}}</title>
     <style>
       .categories {
-        padding: 10px;
+        padding: 1px;
         margin-left: -30px;
+        position: relative; 
+        right: 100px;
+        text-align: center;
+      }
+      .category-link {
+        background-color:aliceblue;
+        color:#003cff9f;
+        display: block;
+        padding: 10px;
+        border: 1px solid #000000;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        font-size: x-large;
+        text-transform: capitalize;
+      }
+      .list-group {
+        list-style: none;
       }
       {% block styles %}{% endblock %}
     </style>
@@ -23,15 +40,16 @@
     {% include "menu.html" %}
     <div class="container">
       <div class="row">
-        <div class="col-md-2 categories text-center">
-          <h2>Categories</h2>
+        <div class="col-md-2 categories text-center"> 
           <ul class="list-group">
           {% for category in categories %}
-            {% if category.is_active%}
-              <a href={{category.link}} class="list-group-item list-group-item-action active">{{category.name}}</a>
+            <li>
+            {% if category.is_active %}
+              <a href={{category.link}} class="category-link active" style="color: aliceblue; background-color: #003cff9f;">{{category.name}}</a>
             {% else %}
-              <a href={{category.link}} class="list-group-item list-group-item-action">{{category.name}}</a>
+              <a href={{category.link}} class="category-link">{{category.name}}</a>
             {% endif %}
+            </li>
           {% endfor %}
           </ul>
         </div>
