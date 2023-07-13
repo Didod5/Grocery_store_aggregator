@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request
-from sqlalchemy import func, select
+from sqlalchemy import func, select, desc
 
 from webapp.models import Category, Good, Price
 from webapp.db import db
@@ -28,24 +28,30 @@ def create_app():
     
     @app.route('/product/<int:product_id>')
     def product(product_id):
-        subq = select(Price.good_id, func.max(Price.date).label("date")).where(Price.good_id == 1).group_by("good_id").subquery()
-        subq2 = select(Price.value, Price.value_discount, Price.date, Price.good_id).join(subq, (Price.good_id == subq.c.good_id) & (Price.date == subq.c.date)).subquery()
-        result = db.session.execute(
-            select(
-                    Good.name, Good.description, Good.image, Good.rating, Good.units, subq2.c.value, subq2.c.value_discount, subq2.c.date
-            ).join(subq2, Good.id == subq2.c.good_id)
-        ).first()
-        if result:
+        good = db.session.execute(select(Good.name, Good.description, Good.image, Good.rating, Good.units).where(Good.id == product_id)).first()
+        if good:
             product = {
-                'date': result.date,
-                'description': result.description,
-                'image': result.image,
-                'name': result.name,
-                'price': result.value,
-                'price_discount': result.value_discount,
-                'rating': result.rating,
-                'units': result.units
+                'description': good.description,
+                'image': good.image,
+                'name': good.name,
+                'rating': good.rating,
+                'units': good.units
             }
+            prices = db.session.execute(select(Price.date, Price.value, Price.value_discount).where(Price.good_id == product_id).order_by(desc(Price.date))).fetchall()
+            if prices:
+                costs = []
+                for object in prices:
+                    cost = {
+                        'value': object.value,
+                        'value_discount': object.value_discount,
+                        'date': object.date  
+                    }
+                    costs.append(cost)
+                current_cost = costs[0]
+                if len(costs) > 1:
+                    return render_template('product.html', page_title=product['name'], product=product, costs=costs, current_cost=current_cost)
+                else:
+                    return render_template('product.html', page_title=product['name'], product=product, current_cost=current_cost)
             return render_template('product.html', page_title=product['name'], product=product)
         return "404"
 

@@ -31,12 +31,14 @@
                 <p>Description:</p>
                 <p>{{ product.description|safe }}</p>
             {% endif %}
-            {% if product.price_discount %}
-                <p>Old price: <s>{{ product.price }}</s><br>Discount price: {{ product.price_discount }}</p>
-            {% else %}
-                <p>Price: {{ product.price }}</p>
+            {% if current_cost %}
+                {% if current_cost.value_discount %}
+                    <p>Old price: <s>{{ current_cost.value }}</s><br>Discount price: {{ current_cost.value_discount }}</p>
+                {% else %}
+                    <p>Price: {{ current_cost.value }}</p>
+                {% endif %}
+            <p>Date: {{ current_cost.date.strftime('%d.%m.%Y')}}</p>
             {% endif %}
-            <p>Date: {{ product.date.strftime('%d.%m.%Y')}}</p>
             {% if product.units %}
                 <p>Size: {{ product.units}}</p>
             {% endif %}
@@ -46,7 +48,26 @@
         </div>
     </div>
 </div>
-
+    {% if costs %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">Discounted price</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for cost in costs%}
+        <tr>
+            <th scope="row">{{ cost.date }}</th>
+            <td>{{ cost.value }}</td>
+            <td>{{ cost.value_discount }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 {% endblock %}
 {%  block scripts %}
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
