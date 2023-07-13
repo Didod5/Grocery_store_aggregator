@@ -27,6 +27,11 @@
 {% endblock %}
 
 {% block content %}
+{% if is_unsuccessful_search %}
+<div class="alert alert-warning" role="alert">
+    No results found. Please try again
+</div>
+{% endif %}
 <div class="row gx-5 row-flex">
     {% for product in products %}
     <div class="col-4 product-card">
@@ -38,35 +43,35 @@
     </div>
     {% endfor %}
 </div>
-
+{% if page%}
 <div class="pagination d-flex justify-content-center" style="margin: 20px;">
     {% if page > 1 %}
-        <a href="{{ url_for('index', page=page-1, category=current_category) }}" class="page-link"> <<Previous</a>
+        <a href="{{ url_for('index', page=page-1, category=current_category, q=q) }}" class="page-link"> <<Previous</a>
     {% endif %}
     
     {% if page > 6 %}
-    <a href="{{ url_for('index', page=1, category=current_category) }}" class="page-link">1</a>
+    <a href="{{ url_for('index', page=1, category=current_category, q=q) }}" class="page-link">1</a>
     <h2>...</h2>
     {% endif %}
 
     {% for num in range((page-5, 1)|max, (page+6, total_pages+1)|min) %}
         {% if num == page %}
-            <a href="{{ url_for('index', page=num, category=current_category) }}" class="page-link active" style="background-color: #003cffef; color: aliceblue;">{{ num }}</a>
+            <a href="{{ url_for('index', page=num, category=current_category, q=q) }}" class="page-link active" style="background-color: #003cffef; color: aliceblue;">{{ num }}</a>
         {% else %}
-            <a href="{{ url_for('index', page=num, category=current_category) }}" class="page-link">{{ num }}</a>
+            <a href="{{ url_for('index', page=num, category=current_category, q=q) }}" class="page-link">{{ num }}</a>
         {% endif %}
     {% endfor %}
 
     {% if page < total_pages - 5 %}
     <h2>...</h2>
-    <a href="{{ url_for('index', page=total_pages, category=current_category) }}" class="page-link">{{ total_pages }}</a>
+    <a href="{{ url_for('index', page=total_pages, category=current_category, q=q) }}" class="page-link">{{ total_pages }}</a>
     {% endif %}
 
     {% if page < total_pages %}
-        <a href="{{ url_for('index', page=page+1, category=current_category) }}" class="page-link">Next >></a>
+        <a href="{{ url_for('index', page=page+1, category=current_category, q=q) }}" class="page-link">Next >></a>
     {% endif %}
 </div>
-
+{% endif %}
 {% endblock %}
 {%  block scripts %}
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
