@@ -44,7 +44,7 @@
           <ul class="list-group">
           {% for category in categories %}
             <li>
-            {% if category.is_active %}
+            {% if category.name == current_category %}
               <a href={{category.link}} class="category-link active" style="color: aliceblue; background-color: #003cff9f;">{{category.name}}</a>
             {% else %}
               <a href={{category.link}} class="category-link">{{category.name}}</a>
