@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+
+{% block styles %}
+.product-page {
+    padding: 10px;
+}
+.product-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+.product-details {
+    margin-bottom: 20px;
+}
+{% endblock %}
+
+{% block content %}
+
+<div class="product-page">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ product.image }}" alt="Product Image" class="product-image">
+        </div>
+        <div class="col-md-6">
+            <h2>{{ product.name }}</h2>
+            {% if product.description %}
+                <p>Description:</p>
+                <p>{{ product.description|safe }}</p>
+            {% endif %}
+            {% if current_cost %}
+                {% if current_cost.value_discount %}
+                    <p>Old price: <s>{{ current_cost.value }}</s><br>Discount price: {{ current_cost.value_discount }}</p>
+                {% else %}
+                    <p>Price: {{ current_cost.value }}</p>
+                {% endif %}
+            <p>Date: {{ current_cost.date.strftime('%d.%m.%Y')}}</p>
+            {% endif %}
+            {% if product.units %}
+                <p>Size: {{ product.units}}</p>
+            {% endif %}
+            {% if product.rating %}
+                <p>Rating: {{ product.rating}}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+    {% if costs %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">Discounted price</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for cost in costs%}
+        <tr>
+            <th scope="row">{{ cost.date }}</th>
+            <td>{{ cost.value }}</td>
+            {% if cost.value_discount %}
+            <td>{{ cost.value_discount }}</td>
+            {% else %}
+            <td>No discount</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}
+{%  block scripts %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}    
+

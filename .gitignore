@@ -19,6 +19,7 @@ lib64/
 parts/
 sdist/
 var/
+.vscode/
 wheels/
 share/python-wheels/
 *.egg-info/
@@ -128,6 +129,9 @@ ENV/
 env.bak/
 venv.bak/
 aggregator_env/
+config.py
+settings.py
+query.py
 
 # Spyder project settings
 .spyderproject
