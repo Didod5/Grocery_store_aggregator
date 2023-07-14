@@ -62,7 +62,11 @@
         <tr>
             <th scope="row">{{ cost.date }}</th>
             <td>{{ cost.value }}</td>
+            {% if cost.value_discount %}
             <td>{{ cost.value_discount }}</td>
+            {% else %}
+            <td>No discount</td>
+            {% endif %}
         </tr>
         {% endfor %}
         </tbody>

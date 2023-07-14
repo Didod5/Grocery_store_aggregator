@@ -35,7 +35,7 @@ python -m venv <my_env_name>
 ```
 pip install -r requirments.txt
 ```
-## Create config.py & set values for the base variables
+### Create config.py & set values for the base variables
 ```
 CATEGORIES = [
     {'name': 'some_category_name', 'link': '/?category=some_category_name'},
@@ -44,7 +44,8 @@ CATEGORIES = [
 OFFSET = 12 #number of products on the main page
 SQLALCHEMY_DATABASE_URI ='your database link'
 ```
-## Run 
+To get more info about parser variables text me baysir17@gmail.com
+### Run 
 ```
 set FLASK_APP=webapp && set FLASK_ENV=development && set FLASK_DEBUG=1 && flask run
 ```
