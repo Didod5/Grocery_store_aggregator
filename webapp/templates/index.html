@@ -36,12 +36,36 @@
     {% for product in products %}
     <div class="col-4 product-card">
         <img src="{{ product.image }}" alt="Product Image" class="product-image" height="200">
-        <h3>{{ product.name }}</h3>
-        {% if product.description%}
-        <p>{{ product.description | safe }}</p>
+        <h4>{{ product.name }}</h4>
+        {% if product.value_discount %}
+            <p>Old price: <s>{{ product.value }}</s><br>Discount price: {{ product.value_discount }}</p>
+        {% else %}
+            <p>Price: {{ product.value }}</p>
         {% endif %}
-        <p>{{ product.value }}</p>
-        <a href="{{ url_for('product', product_id=product.id) }}" style="position: absolute; bottom: 5px; right: 10px;">More</a>
+        <p>Price date: {{ product.date.strftime('%d.%m.%Y')}}</p>
+        <div class="row">
+            <div class="col-8 badges">
+                {% if product.value_discount%}
+                    {% if product.discount == "appeared"%}
+                    <span class="badge badge-info">Fresh discount</span>
+                    {% else %}
+                    <span class="badge badge-primary">Discount</span>
+                    {% endif%}
+                {% endif %}
+                {% if product.discount == "disappeared"%}
+                <span class="badge badge-warning">Discount expired</span>
+                {% endif%}
+                {% if product.price_change == "up"%}
+                <span class="badge badge-danger">Price up</span>
+                {% endif%}
+                {% if product.price_change == "down"%}
+                <span class="badge badge-primary">Price down</span>
+                {% endif%}
+            </div>
+            <div class="col-4">
+                <a href="{{ url_for('product', product_id=product.id) }}">More</a>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>

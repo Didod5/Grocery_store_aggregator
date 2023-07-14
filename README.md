@@ -3,6 +3,8 @@
 "Grocery store aggregator" is a website that allows you to compare products from different stores by category. In addition, it provides data on the price change history of a product.
 
 ## Site page description
+All site pages have a **search**.
+
 - **Home page** (aka the product catalog). It contains:
     - List of product cards with basic some basic product data;
     - Product category filter;
